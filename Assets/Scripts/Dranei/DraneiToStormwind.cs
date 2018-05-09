@@ -83,7 +83,7 @@ public class DraneiToStormwind : MonoBehaviour {
         //Debug.Log(target.X.ToString());
 
         string url = String.Format("http://localhost:12345/MoveToPoint/{0}/{1}/{2}/", target.X.ToString(), target.Y.ToString(), target.Z.ToString());
-        Debug.Log(url);
+        //Debug.Log(url);
         StartCoroutine(WebService.AsyncGet(url));
         lastTargetLocation = new Vector3(target.X, target.Y, target.Z);
         counter++;
