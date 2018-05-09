@@ -18,4 +18,12 @@ public class WebService : MonoBehaviour {
             return reader.ReadToEnd();
         }
     }
+
+    public static IEnumerator AsyncGet(string uri)
+    {
+        using (WWW www = new WWW(uri))
+        {
+            yield return www;
+        }
+    }
 }
