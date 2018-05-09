@@ -6,15 +6,17 @@ using System;
 
 public class DraneiToStormwind : MonoBehaviour {
     WowClient client;
-    float delayTime = 2f;
+    float delayTime = 5f;
     public bool startJourney = false;
     public bool reachedAzureMystIsle = false;
+    public float distance = 0f;
 
-    int counter = 0;
+    public int counter = 0;
     System.IO.StreamReader file;
     string pathFile = @"C:\Users\Meta\Desktop\RPGBox\WoW_Horizon\Paths\DraneiPathToStormwind1.txt";
     Vector3 lastTargetLocation;
     string[] readText;
+
 	void Start () {
         readText = File.ReadAllLines(pathFile);
         string processLog = StartWoWClient();
@@ -33,7 +35,7 @@ public class DraneiToStormwind : MonoBehaviour {
     
 
 	void Update () {
-        if (Time.time > delayTime)
+        if (Time.time > delayTime && !startJourney)
         {
             startJourney = true;
             WalkToAzureMystIsle();
@@ -41,18 +43,19 @@ public class DraneiToStormwind : MonoBehaviour {
         }
 
         if (startJourney)
-        {   
+        {
             if (!reachedAzureMystIsle)
             {
                 string response = WebService.Get("http://localhost:12345/getLocalPlayerInfo/");
                 CTM_Pos target = JsonUtility.FromJson<CTM_Pos>(response);
 
                 Vector3 myLocation = new Vector3(target.X, target.Y, target.Z);
-                if (Vector3.Distance(myLocation, lastTargetLocation) < 0.1f)
+                //Debug.Log("DISTANCE CHECK");
+                distance = Vector3.Distance(myLocation, lastTargetLocation);
+                if (distance < 10f)
                 {
                     Debug.Log("Sending move command");
                     WalkToAzureMystIsle();
-                    counter++;
                 }
                 
             }
@@ -67,6 +70,13 @@ public class DraneiToStormwind : MonoBehaviour {
 
     private void WalkToAzureMystIsle()
     {
+
+        if (counter >= readText.Length - 1)
+        {
+            reachedAzureMystIsle = true;
+            return;
+        }
+            
         string line = readText[counter];
         
         CTM_Pos target = JsonUtility.FromJson<CTM_Pos>(line);
@@ -74,10 +84,9 @@ public class DraneiToStormwind : MonoBehaviour {
 
         string url = String.Format("http://localhost:12345/MoveToPoint/{0}/{1}/{2}/", target.X.ToString(), target.Y.ToString(), target.Z.ToString());
         Debug.Log(url);
-        WebService.AsyncGet(url);
-        reachedAzureMystIsle = true;
-        //lastTargetLocation = new Vector3(target.X, target.Y, target.Z);
-        //counter++;
+        StartCoroutine(WebService.AsyncGet(url));
+        lastTargetLocation = new Vector3(target.X, target.Y, target.Z);
+        counter++;
 
     }
 }
