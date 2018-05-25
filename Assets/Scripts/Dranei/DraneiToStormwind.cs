@@ -13,7 +13,7 @@ public class DraneiToStormwind : MonoBehaviour {
 
     public int counter = 0;
     System.IO.StreamReader file;
-    string pathFile = @"C:\Users\Meta\Desktop\RPGBox\WoW_Horizon\Paths\DraneiPathToStormwind1.txt";
+    string pathFile = @"Paths\DraneiPathToStormwind1.txt";
     Vector3 lastTargetLocation;
     string[] readText;
     public string userLogin;
