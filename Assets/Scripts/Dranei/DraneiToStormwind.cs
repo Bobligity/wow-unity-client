@@ -16,7 +16,7 @@ public class DraneiToStormwind : MonoBehaviour {
     string pathFile = @"C:\Users\Meta\Desktop\RPGBox\WoW_Horizon\Paths\DraneiPathToStormwind1.txt";
     Vector3 lastTargetLocation;
     string[] readText;
-    public string userLogin;
+    public string userName;
 
 	void Start () {
         readText = File.ReadAllLines(pathFile);
@@ -29,7 +29,7 @@ public class DraneiToStormwind : MonoBehaviour {
 
     string StartWoWClient()
     {
-        string response = WebService.Get(String.Format("http://localhost:12345/Login/{0}", userLogin));
+        string response = WebService.Get(String.Format("http://localhost:12345/{0}/Login", userName));
         //Debug.Log(response);
         return response;
     }
@@ -48,7 +48,7 @@ public class DraneiToStormwind : MonoBehaviour {
         {
             if (!reachedAzureMystIsle)
             {
-                string response = WebService.Get("http://localhost:12345/getLocalPlayerInfo/");
+                string response = WebService.Get("http://localhost:12345/{0}/getLocalPlayerInfo/");
                 CTM_Pos target = JsonUtility.FromJson<CTM_Pos>(response);
 
                 Vector3 myLocation = new Vector3(target.X, target.Y, target.Z);
@@ -67,6 +67,7 @@ public class DraneiToStormwind : MonoBehaviour {
 
     void OnApplicationQuit()
     {
+        WebService.Get(String.Format("http://localhost:12345/{0}/Logoff", userName));
         file.Close();
     }
 
