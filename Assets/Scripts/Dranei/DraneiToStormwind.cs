@@ -16,9 +16,11 @@ public class DraneiToStormwind : MonoBehaviour {
     string pathFile = @"C:\Users\Meta\Desktop\RPGBox\WoW_Horizon\Paths\DraneiPathToStormwind1.txt";
     Vector3 lastTargetLocation;
     string[] readText;
+    public string userLogin;
 
 	void Start () {
         readText = File.ReadAllLines(pathFile);
+        Debug.Log("Starting Wow Client");
         string processLog = StartWoWClient();
         client = GetComponent<WowClient>();
         client.processHandle = processLog;
@@ -26,8 +28,8 @@ public class DraneiToStormwind : MonoBehaviour {
 	}
 
     string StartWoWClient()
-    { 
-        string response = WebService.Get("http://localhost:12345/Login/");
+    {
+        string response = WebService.Get(String.Format("http://localhost:12345/Login/{0}", userLogin));
         //Debug.Log(response);
         return response;
     }
