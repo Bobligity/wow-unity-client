@@ -10,6 +10,7 @@ public class DraneiToStormwind : MonoBehaviour {
     public bool startJourney = false;
     public bool reachedAzureMystIsle = false;
     public float distance = 0f;
+    string baseURL = "http://localhost:12345/";
 
     public int counter = 0;
     System.IO.StreamReader file;
@@ -29,7 +30,7 @@ public class DraneiToStormwind : MonoBehaviour {
 
     string StartWoWClient()
     {
-        string response = WebService.Get(String.Format("http://localhost:12345/{0}/Login", userName));
+        string response = WebService.Get(String.Format(baseURL + "{0}/Login", userName));
         //Debug.Log(response);
         return response;
     }
@@ -48,7 +49,7 @@ public class DraneiToStormwind : MonoBehaviour {
         {
             if (!reachedAzureMystIsle)
             {
-                string response = WebService.Get("http://localhost:12345/{0}/getLocalPlayerInfo/");
+                string response = WebService.Get(baseURL + "{0}/getLocalPlayerInfo/");
                 CTM_Pos target = JsonUtility.FromJson<CTM_Pos>(response);
 
                 Vector3 myLocation = new Vector3(target.X, target.Y, target.Z);
@@ -67,7 +68,7 @@ public class DraneiToStormwind : MonoBehaviour {
 
     void OnApplicationQuit()
     {
-        WebService.Get(String.Format("http://localhost:12345/{0}/Logoff", userName));
+        WebService.Get(String.Format(baseURL + "{0}/Logoff", userName));
         file.Close();
     }
 
@@ -85,7 +86,7 @@ public class DraneiToStormwind : MonoBehaviour {
         CTM_Pos target = JsonUtility.FromJson<CTM_Pos>(line);
         //Debug.Log(target.X.ToString());
 
-        string url = String.Format("http://localhost:12345/MoveToPoint/{0}/{1}/{2}/", target.X.ToString(), target.Y.ToString(), target.Z.ToString());
+        string url = String.Format(baseURL + "{4}/MoveToPoint/{0}/{1}/{2}/", target.X.ToString(), target.Y.ToString(), target.Z.ToString(), userName);
         //Debug.Log(url);
         StartCoroutine(WebService.AsyncGet(url));
         lastTargetLocation = new Vector3(target.X, target.Y, target.Z);
